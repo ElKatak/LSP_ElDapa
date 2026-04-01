@@ -1,8 +1,8 @@
 <?php
-// JANGAN panggil session_start() di sini — sudah ada di header.php
-include "template/header.php"; // header.php sudah handle session + $koneksi
+
+include "template/header.php"; 
 include "template/menu.php";
-// $koneksi sudah tersedia dari header.php
+require_admin('data_guru.php');
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

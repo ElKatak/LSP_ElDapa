@@ -67,6 +67,15 @@ $data = mysqli_query($koneksi, "SELECT * FROM kontak ORDER BY tanggal_kirim DESC
                 <td><?= htmlspecialchars(mb_substr($d['pesan'], 0, 80)) ?>...</td>
                 <td><?= $d['tanggal_kirim'] ?></td>
                 <td class="text-center">
+
+                  <button class="btn btn-sm btn-info me-1 btn-view-kontak" title="Lihat Detail"
+                    data-nama="<?= htmlspecialchars($d['nama'], ENT_QUOTES) ?>"
+                    data-email="<?= htmlspecialchars($d['email'], ENT_QUOTES) ?>"
+                    data-pesan="<?= htmlspecialchars($d['pesan'], ENT_QUOTES) ?>"
+                    data-tanggal="<?= htmlspecialchars($d['tanggal_kirim'], ENT_QUOTES) ?>">
+                    <i class="bi bi-eye-fill"></i>
+                  </button>
+
                   <?php if (can_write()): ?>
                     <a href="edit_kontak.php?id=<?= $d['id'] ?>" class="btn btn-sm btn-warning me-1" title="Edit">
                       <i class="bi bi-pencil-square"></i>
@@ -107,5 +116,32 @@ $data = mysqli_query($koneksi, "SELECT * FROM kontak ORDER BY tanggal_kirim DESC
       </div>
     </div>
   </div>
+  <script>
+// Pakai event delegation — aman untuk konten dinamis/pagination
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.btn-view-kontak');
+  if (!btn) return;
+
+  const nama    = btn.dataset.nama    || '—';
+  const email   = btn.dataset.email   || '—';
+  const pesan   = btn.dataset.pesan   || '—';
+  const tanggal = btn.dataset.tanggal || '—';
+
+  // Avatar inisial
+  const initials = nama.trim().split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+  document.getElementById('vk-avatar').innerHTML =
+    `<div style="width:46px;height:46px;border-radius:12px;
+                 background:linear-gradient(135deg,#F97316,#EAB308);
+                 display:flex;align-items:center;justify-content:center;
+                 font-size:18px;font-weight:800;color:#fff;">${initials}</div>`;
+
+  document.getElementById('vk-nama').textContent    = nama;
+  document.getElementById('vk-email').textContent   = email;
+  document.getElementById('vk-tanggal').textContent = tanggal;
+  document.getElementById('vk-pesan').textContent   = pesan;
+
+  new bootstrap.Modal(document.getElementById('modalViewKontak')).show();
+});
+</script>
 </main>
 <?php include "template/footer.php"; ?>

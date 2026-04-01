@@ -1,5 +1,8 @@
 <?php
 include "../koneksi.php";
+require_once "template/role_helper.php"; 
+require_admin('data_berita.php');
+
 $id = $_POST['id'];
 $judul = $_POST['judul'];
 $isi = strip_tags($_POST['isi']);

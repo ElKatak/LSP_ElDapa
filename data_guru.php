@@ -84,9 +84,6 @@ $data = mysqli_query($koneksi, "SELECT * FROM guru ORDER BY id DESC LIMIT $limit
         <div class="card-header border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
           <h5 class="fw-bold mb-0">Daftar Guru</h5>
           <?php if (can_write()): ?>
-          <a href="input_guru.php" class="btn btn-sm btn-primary" style="border-radius:8px;">
-            <i class="bi bi-plus-lg me-1"></i>Tambah Guru
-          </a>
           <?php else: ?>
           <span class="badge" style="background:#FFF7ED;color:#C2410C;border:1px solid #FED7AA;font-size:11px;padding:6px 10px;border-radius:8px;">
             <i class="bi bi-eye me-1"></i>Mode Lihat Saja
@@ -128,6 +125,20 @@ $data = mysqli_query($koneksi, "SELECT * FROM guru ORDER BY id DESC LIMIT $limit
                 <td><?= htmlspecialchars($d['email']) ?></td>
                 <td><?= $d['no_hp'] ?></td>
                 <td class="text-center">
+
+                    <button class="btn btn-sm btn-info me-1" title="Lihat Detail"
+                        onclick="viewGuru({
+                        nama:  '<?= htmlspecialchars($d['nama_guru'], ENT_QUOTES) ?>',
+                        nip:   '<?= htmlspecialchars($d['nip'], ENT_QUOTES) ?>',
+                        jk:    '<?= $d['jenis_kelamin'] ?>',
+                        mapel: '<?= htmlspecialchars($d['mapel'], ENT_QUOTES) ?>',
+                        email: '<?= htmlspecialchars($d['email'], ENT_QUOTES) ?>',
+                        hp:    '<?= $d['no_hp'] ?>',
+                        foto:  '<?= $d['foto'] ?>'
+                        })">
+                        <i class="bi bi-eye-fill"></i>
+                    </button>
+
                   <?php if (can_write()): ?>
                     <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#edit<?= $d['id'] ?>" title="Edit">
                       <i class="bi bi-pencil"></i>
@@ -230,5 +241,78 @@ $data = mysqli_query($koneksi, "SELECT * FROM guru ORDER BY id DESC LIMIT $limit
       </div>
     </div>
   </div>
+  <!-- MODAL VIEW GURU -->
+<div class="modal fade" id="modalViewGuru" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius:16px;border:none;box-shadow:0 20px 60px rgba(0,0,0,.15);">
+
+      <div class="modal-header border-0 pb-0 px-4 pt-4">
+        <h5 class="fw-bold mb-0" style="font-family:'Outfit',sans-serif;">
+          <i class="bi bi-person-badge-fill text-primary me-2"></i>Detail Guru
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4 pb-4">
+        <div class="d-flex align-items-center gap-4 mb-4 p-3"
+             style="background:#F8FAFC;border-radius:12px;">
+          <div id="vg-foto-wrap"></div>
+          <div>
+            <div id="vg-nama" style="font-size:20px;font-weight:800;color:#0F172A;font-family:'Outfit',sans-serif;"></div>
+            <div id="vg-mapel" style="font-size:13px;color:#64748B;margin-top:3px;"></div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div style="background:#F8FAFC;border-radius:10px;padding:14px 16px;">
+              <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">NIP</div>
+              <div id="vg-nip" style="font-size:14px;font-weight:600;color:#1E293B;"></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div style="background:#F8FAFC;border-radius:10px;padding:14px 16px;">
+              <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Jenis Kelamin</div>
+              <div id="vg-jk" style="font-size:14px;font-weight:600;color:#1E293B;"></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div style="background:#F8FAFC;border-radius:10px;padding:14px 16px;">
+              <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Email</div>
+              <div id="vg-email" style="font-size:14px;font-weight:600;color:#1E293B;"></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div style="background:#F8FAFC;border-radius:10px;padding:14px 16px;">
+              <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">No. HP</div>
+              <div id="vg-hp" style="font-size:14px;font-weight:600;color:#1E293B;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function viewGuru(d) {
+  // Foto atau avatar fallback
+  document.getElementById('vg-foto-wrap').innerHTML = d.foto
+    ? `<img src="upload/${d.foto}" style="width:70px;height:70px;border-radius:14px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,.12);">`
+    : `<div style="width:70px;height:70px;border-radius:14px;background:linear-gradient(135deg,#3B82F6,#06B6D4);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;">
+         ${d.nama.trim().split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase()}
+       </div>`;
+
+  document.getElementById('vg-nama').textContent  = d.nama  || '—';
+  document.getElementById('vg-mapel').textContent = d.mapel ? '📚 ' + d.mapel : '—';
+  document.getElementById('vg-nip').textContent   = d.nip   || '—';
+  document.getElementById('vg-jk').textContent    = d.jk    || '—';
+  document.getElementById('vg-email').textContent = d.email || '—';
+  document.getElementById('vg-hp').textContent    = d.hp    || '—';
+
+  new bootstrap.Modal(document.getElementById('modalViewGuru')).show();
+}
+</script>
 </main>
 <?php include "template/footer.php"; ?>

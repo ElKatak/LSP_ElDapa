@@ -2,6 +2,7 @@
 include "../koneksi.php";
 include "template/header.php";
 include "template/menu.php";
+require_admin('data_galeri.php');
 
 $id = (int)$_GET['id'];
 $q  = mysqli_query($koneksi, "SELECT * FROM galeri WHERE id='$id'");

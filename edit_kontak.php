@@ -2,6 +2,7 @@
 include "template/header.php";
 include "template/menu.php";
 include "../koneksi.php";
+require_admin('data_kontak.php');
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 

@@ -1,6 +1,7 @@
 <?php
 include "template/header.php";
 include "template/menu.php";
+require_admin('data_berita.php');
 ?>
 <main class="app-main">
  <!-- App Content Header -->

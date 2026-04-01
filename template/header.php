@@ -167,14 +167,6 @@ $current_file = basename($_SERVER['PHP_SELF']);
 <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
 <div class="app-wrapper">
 
-  <?php if (is_user_only()): ?>
-  <!-- Read-only notice banner for user role -->
-  <div class="readonly-banner">
-    <i class="bi bi-eye-fill" style="font-size:15px;color:#F97316;"></i>
-    Mode <strong>Read-Only</strong> — Anda login sebagai User. Anda hanya dapat melihat data, tidak dapat menambah, mengubah, atau menghapus.
-  </div>
-  <?php endif; ?>
-
   <!-- ════════ TOPBAR ════════ -->
   <nav class="app-header navbar navbar-expand bg-body">
     <div class="container-fluid">
@@ -312,6 +304,15 @@ $current_file = basename($_SERVER['PHP_SELF']);
 
       </ul>
     </div>
+
+               <?php if (is_user_only()): ?>
+  <!-- Read-only notice banner for user role -->
+  <div class="readonly-banner">
+    <i class="bi bi-eye-fill" style="font-size:15px;color:#F97316;"></i>
+    Mode <strong>Read-Only</strong> — Anda login sebagai User. Anda hanya dapat melihat data, tidak dapat menambah, mengubah, atau menghapus.
+  </div>
+  <?php endif; ?>
+
   </nav>
   <!-- ══ END TOPBAR ══ -->
 

@@ -2,6 +2,7 @@
 session_start();
 include "../koneksi.php";
 include "template/notif_helper.php";
+require_admin('data_kontak.php');
 
 $nama          = $_POST['nama'];
 $email         = $_POST['email'];

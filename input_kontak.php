@@ -2,6 +2,7 @@
 
 include "template/header.php";
 include "template/menu.php";
+require_admin('data_kontak.php');
 
 ?>
 

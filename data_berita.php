@@ -73,6 +73,18 @@ $data = mysqli_query($koneksi, "SELECT * FROM berita ORDER BY id DESC LIMIT $lim
                 <td><?= $d['tanggal'] ?></td>
                 <td><?= htmlspecialchars($d['penulis']) ?></td>
                 <td class="text-center">
+
+                    <button class="btn btn-sm btn-info me-1" title="Lihat Detail"
+                    onclick="viewBerita({
+                        judul:   '<?= htmlspecialchars($d['judul'], ENT_QUOTES) ?>',
+                        isi:     <?= json_encode(strip_tags($d['isi'])) ?>,
+                        penulis: '<?= htmlspecialchars($d['penulis'], ENT_QUOTES) ?>',
+                        tanggal: '<?= $d['tanggal'] ?>',
+                        gambar:  '<?= $d['gambar'] ?>'
+                    })">
+                    <i class="bi bi-eye-fill"></i>
+                    </button>
+
                   <?php if (can_write()): ?>
                     <a href="edit_berita.php?id=<?= $d['id'] ?>" class="btn btn-sm btn-warning me-1" title="Edit">
                       <i class="bi bi-pencil-square"></i>
@@ -113,5 +125,50 @@ $data = mysqli_query($koneksi, "SELECT * FROM berita ORDER BY id DESC LIMIT $lim
       </div>
     </div>
   </div>
+  
+  <!-- MODAL VIEW BERITA -->
+<div class="modal fade" id="modalViewBerita" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content" style="border-radius:16px;border:none;">
+
+      <div class="modal-header border-0 px-4 pt-4 pb-2">
+        <h5 class="fw-bold mb-0" style="font-family:'Outfit',sans-serif;">
+          <i class="bi bi-newspaper text-primary me-2"></i>Detail Berita
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4 pb-4">
+        <div id="vb-gambar-wrap" class="mb-3"></div>
+        <h4 id="vb-judul" style="font-weight:800;color:#0F172A;font-family:'Outfit',sans-serif;"></h4>
+
+        <div class="d-flex gap-3 mb-3" style="font-size:12px;color:#64748B;">
+          <span><i class="bi bi-person-fill me-1"></i><span id="vb-penulis"></span></span>
+          <span><i class="bi bi-calendar3 me-1"></i><span id="vb-tanggal"></span></span>
+        </div>
+
+        <div style="height:1px;background:#F1F5F9;margin-bottom:16px;"></div>
+
+        <div id="vb-isi"
+             style="font-size:14px;color:#334155;line-height:1.8;white-space:pre-wrap;max-height:300px;overflow-y:auto;">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function viewBerita(d) {
+  document.getElementById('vb-gambar-wrap').innerHTML = d.gambar
+    ? `<img src="upload/${d.gambar}" style="width:100%;height:200px;object-fit:cover;border-radius:12px;">`
+    : '';
+  document.getElementById('vb-judul').textContent   = d.judul;
+  document.getElementById('vb-penulis').textContent = d.penulis || '—';
+  document.getElementById('vb-tanggal').textContent = d.tanggal || '—';
+  document.getElementById('vb-isi').textContent     = d.isi || '—';
+  new bootstrap.Modal(document.getElementById('modalViewBerita')).show();
+}
+</script>
 </main>
 <?php include "template/footer.php"; ?>

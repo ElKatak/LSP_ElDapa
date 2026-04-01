@@ -189,7 +189,7 @@ foreach ($rows_chart as $rc) {
                 <?php endforeach; ?>
                 <div class="mt-3">
                   <a href="data_sekolah.php" class="btn btn-sm btn-outline-primary w-100" style="border-radius:8px;">
-                    <i class="bi bi-pencil me-1"></i>Edit Profil
+                    <i class="bi bi-pencil me-1"></i>Lihat Profil
                   </a>
                 </div>
               <?php else: ?>

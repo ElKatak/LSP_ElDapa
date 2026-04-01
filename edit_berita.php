@@ -2,6 +2,7 @@
 include "template/header.php";
 include "template/menu.php";
 include "../koneksi.php";
+require_admin('data_berita.php');
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $query = mysqli_query($koneksi, "SELECT * FROM berita WHERE id='$id'");

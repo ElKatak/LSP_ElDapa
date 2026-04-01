@@ -87,6 +87,17 @@ $data = mysqli_query($koneksi, "SELECT * FROM galeri ORDER BY id DESC LIMIT $lim
                 </td>
                 <td><?= $d['tanggal_upload'] ?></td>
                 <td class="text-center">
+
+                    <button class="btn btn-sm btn-info me-1" title="Lihat Detail"
+                    onclick="viewGaleri({
+                        judul:   '<?= htmlspecialchars($d['judul'], ENT_QUOTES) ?>',
+                        desk:    <?= json_encode(strip_tags($d['deskripsi'])) ?>,
+                        tanggal: '<?= $d['tanggal_upload'] ?>',
+                        gambar:  '<?= $d['gambar'] ?>'
+                    })">
+                    <i class="bi bi-eye-fill"></i>
+                    </button>   
+
                   <?php if (can_write()): ?>
                     <a href="edit_galeri.php?id=<?= $d['id'] ?>" class="btn btn-sm btn-warning me-1" title="Edit">
                       <i class="bi bi-pencil-square"></i>
@@ -127,5 +138,41 @@ $data = mysqli_query($koneksi, "SELECT * FROM galeri ORDER BY id DESC LIMIT $lim
       </div>
     </div>
   </div>
+  <!-- MODAL VIEW GALERI -->
+<div class="modal fade" id="modalViewGaleri" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:16px;border:none;">
+
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="fw-bold mb-0" style="font-family:'Outfit',sans-serif;">
+          <i class="bi bi-images text-purple me-2"></i>Detail Galeri
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4 pb-4">
+        <div id="vgal-gambar-wrap" class="mb-3"></div>
+        <h5 id="vgal-judul" style="font-weight:800;color:#0F172A;font-family:'Outfit',sans-serif;"></h5>
+        <div style="font-size:12px;color:#64748B;margin-bottom:12px;">
+          <i class="bi bi-calendar3 me-1"></i><span id="vgal-tanggal"></span>
+        </div>
+        <p id="vgal-desk" style="font-size:14px;color:#475569;line-height:1.7;"></p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function viewGaleri(d) {
+  document.getElementById('vgal-gambar-wrap').innerHTML = d.gambar
+    ? `<img src="upload/${d.gambar}" style="width:100%;height:220px;object-fit:cover;border-radius:12px;">`
+    : `<div style="width:100%;height:80px;background:#F1F5F9;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#94A3B8;"><i class="bi bi-image fs-3"></i></div>`;
+  document.getElementById('vgal-judul').textContent   = d.judul;
+  document.getElementById('vgal-tanggal').textContent = d.tanggal || '—';
+  document.getElementById('vgal-desk').textContent    = d.desk || '—';
+  new bootstrap.Modal(document.getElementById('modalViewGaleri')).show();
+}
+</script>
 </main>
 <?php include "template/footer.php"; ?>

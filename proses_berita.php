@@ -2,6 +2,8 @@
 session_start();
 include "../koneksi.php";
 include "template/notif_helper.php";
+require_once "template/role_helper.php"; 
+require_admin('data_berita.php'); 
 
 $judul   = $_POST['judul'];
 $isi     = strip_tags($_POST['isi']);

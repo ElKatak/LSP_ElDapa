@@ -1,6 +1,7 @@
 <?php
 include "template/header.php";
 include "template/menu.php";
+require_admin('data_galeri.php');
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $judul          = $_POST['judul'];

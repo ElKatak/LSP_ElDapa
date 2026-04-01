@@ -1,9 +1,17 @@
 <?php
 include "template/header.php";
 include "template/menu.php";
+include "../koneksi.php";
 
-/* ── HAPUS ── */
+/* ── CEK JUMLAH RECORD (max 1) ── */
+$total_profil = (int)mysqli_fetch_assoc(
+    mysqli_query($koneksi, "SELECT COUNT(*) c FROM profil_sekolah")
+)['c'];
+$profil_exists = ($total_profil > 0);
+
+/* ── HAPUS (admin only) ── */
 if (isset($_GET['hapus'])) {
+    require_admin('data_sekolah.php');
     $id = (int)$_GET['hapus'];
     $q  = mysqli_query($koneksi, "SELECT logo FROM profil_sekolah WHERE id='$id'");
     $d  = mysqli_fetch_assoc($q);
@@ -15,8 +23,9 @@ if (isset($_GET['hapus'])) {
     exit;
 }
 
-/* ── UPDATE ── */
+/* ── UPDATE (admin only) ── */
 if (isset($_POST['update'])) {
+    require_admin('data_sekolah.php');
     $id             = (int)$_POST['id'];
     $nama_sekolah   = $_POST['nama_sekolah'];
     $npsn           = $_POST['npsn'];
@@ -29,7 +38,6 @@ if (isset($_POST['update'])) {
     $telepon        = $_POST['telepon'];
     $website        = $_POST['website'];
     $kepala_sekolah = $_POST['kepala_sekolah'];
-    // strip_tags SETELAH ambil dari POST, tidak di-overwrite
     $visi           = strip_tags($_POST['visi']);
     $misi           = strip_tags($_POST['misi']);
     $deskripsi      = strip_tags($_POST['deskripsi']);
@@ -69,6 +77,7 @@ if (isset($_POST['update'])) {
 /* ── EDIT FORM ── */
 $edit = null;
 if (isset($_GET['edit'])) {
+    require_admin('data_sekolah.php');
     $id   = (int)$_GET['edit'];
     $edit = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM profil_sekolah WHERE id='$id'"));
 }
@@ -77,7 +86,7 @@ if (isset($_GET['edit'])) {
 $limit     = 5;
 $page      = max(1, (int)($_GET['page'] ?? 1));
 $offset    = ($page - 1) * $limit;
-$total     = mysqli_num_rows(mysqli_query($koneksi, "SELECT id FROM profil_sekolah"));
+$total     = $total_profil;
 $totalPage = ceil($total / $limit);
 $data      = mysqli_query($koneksi, "SELECT * FROM profil_sekolah ORDER BY id DESC LIMIT $limit OFFSET $offset");
 ?>
@@ -100,7 +109,7 @@ $data      = mysqli_query($koneksi, "SELECT * FROM profil_sekolah ORDER BY id DE
     <div class="container-fluid">
 
       <?php if ($edit): ?>
-      <!-- FORM EDIT — tabel disembunyikan saat mode edit -->
+      <!-- ═══ FORM EDIT ═══ -->
       <div class="card border-0 shadow-sm mb-4" style="border-radius:14px;">
         <div class="card-header border-0 pt-3 px-4">
           <h5 class="fw-bold mb-0">Edit Profil Sekolah</h5>
@@ -139,10 +148,35 @@ $data      = mysqli_query($koneksi, "SELECT * FROM profil_sekolah ORDER BY id DE
       </div>
 
       <?php else: ?>
-      <!-- DATA TABLE — hanya tampil jika tidak dalam mode edit -->
+      <!-- ═══ DATA TABLE ═══ -->
       <div class="card border-0 shadow-sm" style="border-radius:14px;">
         <div class="card-header border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
           <h5 class="fw-bold mb-0">Data Profil Sekolah</h5>
+          <div class="d-flex gap-2 align-items-center">
+            <?php if (can_write()): ?>
+              <?php if (!$profil_exists): ?>
+                <!-- Belum ada record → tombol Tambah aktif -->
+                <a href="input_sekolah.php" class="btn btn-sm btn-primary" style="border-radius:8px;">
+                  <i class="bi bi-plus-lg me-1"></i>Tambah Profil
+                </a>
+              <?php else: ?>
+                <!-- Sudah ada record → tombol Tambah dikunci -->
+                <button class="btn btn-sm btn-secondary" disabled
+                  title="Profil sekolah sudah ada. Hapus data lama terlebih dahulu untuk menambah baru."
+                  style="border-radius:8px;cursor:not-allowed;opacity:.65;">
+                  <i class="bi bi-lock-fill me-1"></i>Tambah Profil
+                </button>
+                <span style="font-size:11.5px;color:#64748B;">
+                  <i class="bi bi-info-circle me-1 text-warning"></i>
+                  Hanya 1 profil diizinkan. Hapus data lama untuk mengganti.
+                </span>
+              <?php endif; ?>
+            <?php else: ?>
+              <span class="badge" style="background:#FFF7ED;color:#C2410C;border:1px solid #FED7AA;font-size:11px;padding:6px 10px;border-radius:8px;">
+                <i class="bi bi-eye me-1"></i>Mode Lihat Saja
+              </span>
+            <?php endif; ?>
+          </div>
         </div>
         <div class="card-body table-responsive">
           <table class="table table-bordered table-striped align-middle">
@@ -151,6 +185,8 @@ $data      = mysqli_query($koneksi, "SELECT * FROM profil_sekolah ORDER BY id DE
                 <th width="5%">No</th>
                 <th>Nama Sekolah</th>
                 <th>NPSN</th>
+                <th>Kabupaten</th>
+                <th>Kepala Sekolah</th>
                 <th width="80">Logo</th>
                 <th width="100" class="text-center">Aksi</th>
               </tr>
@@ -165,35 +201,42 @@ $data      = mysqli_query($koneksi, "SELECT * FROM profil_sekolah ORDER BY id DE
                 <td><?= $no++ ?></td>
                 <td class="fw-semibold"><?= htmlspecialchars($d['nama_sekolah']) ?></td>
                 <td><?= $d['npsn'] ?></td>
-                <td><?php if ($d['logo']): ?><img src="upload/<?= $d['logo'] ?>" width="60" class="rounded"><?php else: ?>-<?php endif; ?></td>
+                <td><?= htmlspecialchars($d['kabupaten']) ?></td>
+                <td><?= htmlspecialchars($d['kepala_sekolah']) ?></td>
+                <td>
+                  <?php if ($d['logo']): ?>
+                    <img src="upload/<?= $d['logo'] ?>" width="60" class="rounded">
+                  <?php else: ?>-<?php endif; ?>
+                </td>
                 <td class="text-center">
-                  <a href="?edit=<?= $d['id'] ?>" class="btn btn-sm btn-warning me-1"><i class="bi bi-pencil"></i></a>
-                  <a href="?hapus=<?= $d['id'] ?>" onclick="return confirm('Hapus data ini?')" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
+                  <?php if (can_write()): ?>
+                    <!-- Edit: selalu tersedia untuk admin -->
+                    <a href="?edit=<?= $d['id'] ?>" class="btn btn-sm btn-warning me-1" title="Edit">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <!-- Hapus: tersedia, tapi hanya jika mau ganti dengan profil baru -->
+                    <a href="?hapus=<?= $d['id'] ?>"
+                       onclick="return confirm('Hapus profil sekolah ini? Anda perlu membuat profil baru setelah ini.')"
+                       class="btn btn-sm btn-danger" title="Hapus">
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  <?php else: ?>
+                    <span style="font-size:11px;color:#94A3B8;">—</span>
+                  <?php endif; ?>
                 </td>
               </tr>
               <?php
                   endwhile;
               } else {
-                  echo "<tr><td colspan='5' class='text-center'>Data kosong</td></tr>";
+                  echo "<tr><td colspan='7' class='text-center text-muted py-4'>";
+                  echo "<i class='bi bi-building-x fs-2 d-block mb-2 opacity-25'></i>";
+                  echo "Profil sekolah belum diisi.";
+                  if (can_write()) echo " <a href='input_sekolah.php' class='btn btn-sm btn-primary ms-2'><i class='bi bi-plus me-1'></i>Input Sekarang</a>";
+                  echo "</td></tr>";
               }
               ?>
             </tbody>
           </table>
-        </div>
-        <div class="card-footer clearfix">
-          <ul class="pagination pagination-sm m-0 float-end">
-            <?php if ($page > 1): ?>
-              <li class="page-item"><a class="page-link" href="?page=<?= $page - 1 ?>">&laquo;</a></li>
-            <?php endif; ?>
-            <?php for ($i = 1; $i <= $totalPage; $i++): ?>
-              <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
-                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-              </li>
-            <?php endfor; ?>
-            <?php if ($page < $totalPage): ?>
-              <li class="page-item"><a class="page-link" href="?page=<?= $page + 1 ?>">&raquo;</a></li>
-            <?php endif; ?>
-          </ul>
         </div>
       </div>
       <?php endif; ?>

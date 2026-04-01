@@ -3,8 +3,9 @@ include "template/header.php";
 include "template/menu.php";
 include "../koneksi.php";
 
-/* ── HAPUS ── */
+/* ── HAPUS (admin only) ── */
 if (isset($_GET['hapus'])) {
+    require_admin('data_guru.php');
     $id = (int)$_GET['hapus'];
     $q  = mysqli_query($koneksi, "SELECT foto FROM guru WHERE id='$id'");
     $d  = mysqli_fetch_assoc($q);
@@ -18,8 +19,9 @@ if (isset($_GET['hapus'])) {
     exit;
 }
 
-/* ── EDIT ── */
+/* ── EDIT (admin only) ── */
 if (isset($_POST['edit'])) {
+    require_admin('data_guru.php');
     $id            = (int)$_POST['id'];
     $nama_guru     = $_POST['nama_guru'];
     $nip           = $_POST['nip'];
@@ -81,6 +83,15 @@ $data = mysqli_query($koneksi, "SELECT * FROM guru ORDER BY id DESC LIMIT $limit
       <div class="card border-0 shadow-sm" style="border-radius:14px;">
         <div class="card-header border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
           <h5 class="fw-bold mb-0">Daftar Guru</h5>
+          <?php if (can_write()): ?>
+          <a href="input_guru.php" class="btn btn-sm btn-primary" style="border-radius:8px;">
+            <i class="bi bi-plus-lg me-1"></i>Tambah Guru
+          </a>
+          <?php else: ?>
+          <span class="badge" style="background:#FFF7ED;color:#C2410C;border:1px solid #FED7AA;font-size:11px;padding:6px 10px;border-radius:8px;">
+            <i class="bi bi-eye me-1"></i>Mode Lihat Saja
+          </span>
+          <?php endif; ?>
         </div>
         <div class="card-body table-responsive">
           <table class="table table-bordered table-striped align-middle">
@@ -117,17 +128,22 @@ $data = mysqli_query($koneksi, "SELECT * FROM guru ORDER BY id DESC LIMIT $limit
                 <td><?= htmlspecialchars($d['email']) ?></td>
                 <td><?= $d['no_hp'] ?></td>
                 <td class="text-center">
-                  <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#edit<?= $d['id'] ?>" title="Edit">
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                  <a href="?hapus=<?= $d['id'] ?>" class="btn btn-sm btn-danger" title="Hapus"
-                     onclick="return confirm('Yakin hapus data ini?')">
-                    <i class="bi bi-trash"></i>
-                  </a>
+                  <?php if (can_write()): ?>
+                    <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#edit<?= $d['id'] ?>" title="Edit">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <a href="?hapus=<?= $d['id'] ?>" class="btn btn-sm btn-danger" title="Hapus"
+                       onclick="return confirm('Yakin hapus data ini?')">
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  <?php else: ?>
+                    <span style="font-size:11px;color:#94A3B8;">—</span>
+                  <?php endif; ?>
                 </td>
               </tr>
 
-              <!-- MODAL EDIT -->
+              <?php if (can_write()): ?>
+              <!-- MODAL EDIT (hanya untuk admin) -->
               <div class="modal fade" id="edit<?= $d['id'] ?>">
                 <div class="modal-dialog modal-lg">
                   <div class="modal-content">
@@ -151,8 +167,8 @@ $data = mysqli_query($koneksi, "SELECT * FROM guru ORDER BY id DESC LIMIT $limit
                           <div class="col-md-6 mb-3">
                             <label class="fw-semibold">Jenis Kelamin</label>
                             <select name="jenis_kelamin" class="form-control">
-                              <option value="Laki-Laki" <?= ($d['jenis_kelamin'] == 'Laki-Laki') ? 'selected' : '' ?>>Laki-Laki</option>
-                              <option value="Perempuan" <?= ($d['jenis_kelamin'] == 'Perempuan') ? 'selected' : '' ?>>Perempuan</option>
+                              <option value="Laki-Laki" <?= ($d['jenis_kelamin']=='Laki-Laki')?'selected':'' ?>>Laki-Laki</option>
+                              <option value="Perempuan" <?= ($d['jenis_kelamin']=='Perempuan')?'selected':'' ?>>Perempuan</option>
                             </select>
                           </div>
                           <div class="col-md-6 mb-3">
@@ -185,7 +201,7 @@ $data = mysqli_query($koneksi, "SELECT * FROM guru ORDER BY id DESC LIMIT $limit
                   </div>
                 </div>
               </div>
-              <!-- END MODAL -->
+              <?php endif; // can_write() ?>
 
               <?php
                   }
@@ -199,9 +215,7 @@ $data = mysqli_query($koneksi, "SELECT * FROM guru ORDER BY id DESC LIMIT $limit
         <div class="card-footer clearfix">
           <ul class="pagination pagination-sm m-0 float-end">
             <?php if ($halaman > 1): ?>
-              <li class="page-item">
-                <a class="page-link" href="?page=<?= $halaman - 1 ?>">&laquo;</a>
-              </li>
+              <li class="page-item"><a class="page-link" href="?page=<?= $halaman - 1 ?>">&laquo;</a></li>
             <?php endif; ?>
             <?php for ($i = 1; $i <= $totalHalaman; $i++): ?>
               <li class="page-item <?= ($i == $halaman) ? 'active' : '' ?>">
@@ -209,9 +223,7 @@ $data = mysqli_query($koneksi, "SELECT * FROM guru ORDER BY id DESC LIMIT $limit
               </li>
             <?php endfor; ?>
             <?php if ($halaman < $totalHalaman): ?>
-              <li class="page-item">
-                <a class="page-link" href="?page=<?= $halaman + 1 ?>">&raquo;</a>
-              </li>
+              <li class="page-item"><a class="page-link" href="?page=<?= $halaman + 1 ?>">&raquo;</a></li>
             <?php endif; ?>
           </ul>
         </div>

@@ -1,12 +1,10 @@
 <?php
-// JANGAN panggil session_start() di sini — sudah ada di header.php
-include "template/header.php"; // header.php sudah handle session + $koneksi
+include "template/header.php";
 include "template/menu.php";
-
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $judul          = $_POST['judul'];
-    $deskripsi = strip_tags($_POST['deskripsi']);
+    $deskripsi      = strip_tags($_POST['deskripsi']);
     $tanggal_upload = date('Y-m-d');
 
     $gambar = '';
@@ -22,10 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     mysqli_query($koneksi, "INSERT INTO galeri (judul, deskripsi, gambar, tanggal_upload) VALUES ('$j','$d','$g','$t')");
 
-    // ── Notifikasi ──
     tambah_notif('galeri', 'Foto baru ditambahkan ke galeri', '"' . $judul . '"');
 
-    echo "<script>alert('Galeri berhasil disimpan');window.location='input_galeri.php';</script>";
+    echo "<script>alert('Galeri berhasil disimpan');window.location='data_galeri.php';</script>";
 }
 ?>
 <main class="app-main">
@@ -64,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
               <div class="mb-3">
                 <label class="form-label fw-semibold">Tanggal Upload</label>
                 <input type="text" class="form-control" value="<?= date('d-m-Y H:i') ?>" readonly disabled style="background:#f8f9fa;cursor:not-allowed;">
-                <input type="hidden" name="tanggal" value="<?= date('Y-m-d') ?>">
               </div>
               <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i>Simpan</button>

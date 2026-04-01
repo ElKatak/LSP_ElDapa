@@ -1,16 +1,14 @@
 <?php
-// JANGAN panggil session_start() di sini — sudah ada di header.php
-include "template/header.php"; // header.php sudah handle session + $koneksi
+include "template/header.php";
 include "template/menu.php";
-// $koneksi sudah tersedia dari header.php
 
 /* ── HAPUS ── */
 if (isset($_GET['hapus'])) {
     $id = (int)$_GET['hapus'];
-    $q = mysqli_query($koneksi, "SELECT logo FROM profil_sekolah WHERE id='$id'");
-    $d = mysqli_fetch_assoc($q);
+    $q  = mysqli_query($koneksi, "SELECT logo FROM profil_sekolah WHERE id='$id'");
+    $d  = mysqli_fetch_assoc($q);
     if ($d) {
-        if (!empty($d['logo']) && file_exists("upload/".$d['logo'])) unlink("upload/".$d['logo']);
+        if (!empty($d['logo']) && file_exists("upload/" . $d['logo'])) unlink("upload/" . $d['logo']);
         mysqli_query($koneksi, "DELETE FROM profil_sekolah WHERE id='$id'");
     }
     echo "<script>alert('Data berhasil dihapus');window.location='data_sekolah.php';</script>";
@@ -19,44 +17,51 @@ if (isset($_GET['hapus'])) {
 
 /* ── UPDATE ── */
 if (isset($_POST['update'])) {
-    $id = $_POST['id'];
-    $visi      = strip_tags($_POST['visi']);
-    $misi      = strip_tags($_POST['misi']);
-    $deskripsi = strip_tags($_POST['deskripsi']);
-    $fields = ['nama_sekolah','npsn','alamat','desa','kecamatan','kabupaten','provinsi','email','telepon','website','kepala_sekolah','visi','misi','deskripsi'];
-    foreach ($fields as $f) $$f = $_POST[$f];
-    $logo_lama = $_POST['logo_lama'];
+    $id             = (int)$_POST['id'];
+    $nama_sekolah   = $_POST['nama_sekolah'];
+    $npsn           = $_POST['npsn'];
+    $alamat         = $_POST['alamat'];
+    $desa           = $_POST['desa'];
+    $kecamatan      = $_POST['kecamatan'];
+    $kabupaten      = $_POST['kabupaten'];
+    $provinsi       = $_POST['provinsi'];
+    $email          = $_POST['email'];
+    $telepon        = $_POST['telepon'];
+    $website        = $_POST['website'];
+    $kepala_sekolah = $_POST['kepala_sekolah'];
+    // strip_tags SETELAH ambil dari POST, tidak di-overwrite
+    $visi           = strip_tags($_POST['visi']);
+    $misi           = strip_tags($_POST['misi']);
+    $deskripsi      = strip_tags($_POST['deskripsi']);
+    $logo_lama      = $_POST['logo_lama'];
 
     if (!empty($_FILES['logo']['name'])) {
-        $logo_baru = time().'_'.$_FILES['logo']['name'];
-        move_uploaded_file($_FILES['logo']['tmp_name'], "upload/".$logo_baru);
-        if ($logo_lama && file_exists("upload/".$logo_lama)) unlink("upload/".$logo_lama);
+        $logo_baru = time() . '_' . $_FILES['logo']['name'];
+        move_uploaded_file($_FILES['logo']['tmp_name'], "upload/" . $logo_baru);
+        if ($logo_lama && file_exists("upload/" . $logo_lama)) unlink("upload/" . $logo_lama);
     } else {
         $logo_baru = $logo_lama;
     }
 
-    $ns = mysqli_real_escape_string($koneksi, $nama_sekolah);
     mysqli_query($koneksi, "UPDATE profil_sekolah SET
-        nama_sekolah='".mysqli_real_escape_string($koneksi,$nama_sekolah)."',
-        npsn='".mysqli_real_escape_string($koneksi,$npsn)."',
-        alamat='".mysqli_real_escape_string($koneksi,$alamat)."',
-        desa='".mysqli_real_escape_string($koneksi,$desa)."',
-        kecamatan='".mysqli_real_escape_string($koneksi,$kecamatan)."',
-        kabupaten='".mysqli_real_escape_string($koneksi,$kabupaten)."',
-        provinsi='".mysqli_real_escape_string($koneksi,$provinsi)."',
-        email='".mysqli_real_escape_string($koneksi,$email)."',
-        telepon='".mysqli_real_escape_string($koneksi,$telepon)."',
-        website='".mysqli_real_escape_string($koneksi,$website)."',
-        kepala_sekolah='".mysqli_real_escape_string($koneksi,$kepala_sekolah)."',
-        logo='".mysqli_real_escape_string($koneksi,$logo_baru)."',
-        visi='".mysqli_real_escape_string($koneksi,$visi)."',
-        misi='".mysqli_real_escape_string($koneksi,$misi)."',
-        deskripsi='".mysqli_real_escape_string($koneksi,$deskripsi)."'
+        nama_sekolah='" . mysqli_real_escape_string($koneksi, $nama_sekolah) . "',
+        npsn='" . mysqli_real_escape_string($koneksi, $npsn) . "',
+        alamat='" . mysqli_real_escape_string($koneksi, $alamat) . "',
+        desa='" . mysqli_real_escape_string($koneksi, $desa) . "',
+        kecamatan='" . mysqli_real_escape_string($koneksi, $kecamatan) . "',
+        kabupaten='" . mysqli_real_escape_string($koneksi, $kabupaten) . "',
+        provinsi='" . mysqli_real_escape_string($koneksi, $provinsi) . "',
+        email='" . mysqli_real_escape_string($koneksi, $email) . "',
+        telepon='" . mysqli_real_escape_string($koneksi, $telepon) . "',
+        website='" . mysqli_real_escape_string($koneksi, $website) . "',
+        kepala_sekolah='" . mysqli_real_escape_string($koneksi, $kepala_sekolah) . "',
+        logo='" . mysqli_real_escape_string($koneksi, $logo_baru) . "',
+        visi='" . mysqli_real_escape_string($koneksi, $visi) . "',
+        misi='" . mysqli_real_escape_string($koneksi, $misi) . "',
+        deskripsi='" . mysqli_real_escape_string($koneksi, $deskripsi) . "'
         WHERE id='$id'");
 
-    // ── Notifikasi ──
     tambah_notif('profil', 'Profil sekolah diperbarui', 'Data ' . $nama_sekolah . ' telah diperbarui');
-
     echo "<script>alert('Profil berhasil diperbarui');window.location='data_sekolah.php';</script>";
     exit;
 }
@@ -64,17 +69,17 @@ if (isset($_POST['update'])) {
 /* ── EDIT FORM ── */
 $edit = null;
 if (isset($_GET['edit'])) {
-    $id = (int)$_GET['edit'];
+    $id   = (int)$_GET['edit'];
     $edit = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM profil_sekolah WHERE id='$id'"));
 }
 
 /* ── PAGINATION ── */
-$limit = 5;
-$page = max(1, (int)($_GET['page'] ?? 1));
-$offset = ($page - 1) * $limit;
-$total = mysqli_num_rows(mysqli_query($koneksi, "SELECT id FROM profil_sekolah"));
+$limit     = 5;
+$page      = max(1, (int)($_GET['page'] ?? 1));
+$offset    = ($page - 1) * $limit;
+$total     = mysqli_num_rows(mysqli_query($koneksi, "SELECT id FROM profil_sekolah"));
 $totalPage = ceil($total / $limit);
-$data = mysqli_query($koneksi, "SELECT * FROM profil_sekolah ORDER BY id DESC LIMIT $limit OFFSET $offset");
+$data      = mysqli_query($koneksi, "SELECT * FROM profil_sekolah ORDER BY id DESC LIMIT $limit OFFSET $offset");
 ?>
 <main class="app-main">
   <div class="app-content-header">
@@ -95,7 +100,7 @@ $data = mysqli_query($koneksi, "SELECT * FROM profil_sekolah ORDER BY id DESC LI
     <div class="container-fluid">
 
       <?php if ($edit): ?>
-      <!-- FORM EDIT -->
+      <!-- FORM EDIT — tabel disembunyikan saat mode edit -->
       <div class="card border-0 shadow-sm mb-4" style="border-radius:14px;">
         <div class="card-header border-0 pt-3 px-4">
           <h5 class="fw-bold mb-0">Edit Profil Sekolah</h5>
@@ -132,43 +137,66 @@ $data = mysqli_query($koneksi, "SELECT * FROM profil_sekolah ORDER BY id DESC LI
           </form>
         </div>
       </div>
-      <?php endif; ?>
 
-      <!-- DATA TABLE -->
+      <?php else: ?>
+      <!-- DATA TABLE — hanya tampil jika tidak dalam mode edit -->
       <div class="card border-0 shadow-sm" style="border-radius:14px;">
         <div class="card-header border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
           <h5 class="fw-bold mb-0">Data Profil Sekolah</h5>
-          <a href="input_sekolah.php" class="btn btn-sm btn-primary" style="border-radius:8px;"><i class="bi bi-plus me-1"></i>Tambah</a>
         </div>
         <div class="card-body table-responsive">
-          <table class="table table-bordered align-middle">
-            <thead><tr><th>No</th><th>Nama Sekolah</th><th>NPSN</th><th>Logo</th><th class="text-center">Aksi</th></tr></thead>
+          <table class="table table-bordered table-striped align-middle">
+            <thead>
+              <tr>
+                <th width="5%">No</th>
+                <th>Nama Sekolah</th>
+                <th>NPSN</th>
+                <th width="80">Logo</th>
+                <th width="100" class="text-center">Aksi</th>
+              </tr>
+            </thead>
             <tbody>
-              <?php $no=$offset+1; while($d=mysqli_fetch_assoc($data)): ?>
+              <?php
+              $no = $offset + 1;
+              if (mysqli_num_rows($data) > 0) {
+                  while ($d = mysqli_fetch_assoc($data)):
+              ?>
               <tr>
                 <td><?= $no++ ?></td>
                 <td class="fw-semibold"><?= htmlspecialchars($d['nama_sekolah']) ?></td>
                 <td><?= $d['npsn'] ?></td>
-                <td><?php if($d['logo']): ?><img src="upload/<?= $d['logo'] ?>" width="60" class="rounded"><?php else: ?>-<?php endif; ?></td>
+                <td><?php if ($d['logo']): ?><img src="upload/<?= $d['logo'] ?>" width="60" class="rounded"><?php else: ?>-<?php endif; ?></td>
                 <td class="text-center">
                   <a href="?edit=<?= $d['id'] ?>" class="btn btn-sm btn-warning me-1"><i class="bi bi-pencil"></i></a>
                   <a href="?hapus=<?= $d['id'] ?>" onclick="return confirm('Hapus data ini?')" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></a>
                 </td>
               </tr>
-              <?php endwhile; ?>
+              <?php
+                  endwhile;
+              } else {
+                  echo "<tr><td colspan='5' class='text-center'>Data kosong</td></tr>";
+              }
+              ?>
             </tbody>
           </table>
         </div>
         <div class="card-footer clearfix">
           <ul class="pagination pagination-sm m-0 float-end">
-            <?php for($i=1;$i<=$totalPage;$i++): ?>
-              <li class="page-item <?= ($i==$page?'active':'') ?>">
+            <?php if ($page > 1): ?>
+              <li class="page-item"><a class="page-link" href="?page=<?= $page - 1 ?>">&laquo;</a></li>
+            <?php endif; ?>
+            <?php for ($i = 1; $i <= $totalPage; $i++): ?>
+              <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
                 <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
               </li>
             <?php endfor; ?>
+            <?php if ($page < $totalPage): ?>
+              <li class="page-item"><a class="page-link" href="?page=<?= $page + 1 ?>">&raquo;</a></li>
+            <?php endif; ?>
           </ul>
         </div>
       </div>
+      <?php endif; ?>
 
     </div>
   </div>

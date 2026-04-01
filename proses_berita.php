@@ -1,10 +1,10 @@
 <?php
 session_start();
 include "../koneksi.php";
-include "template/notif_helper.php"; // ← notifikasi helper
+include "template/notif_helper.php";
 
 $judul   = $_POST['judul'];
-$isi = strip_tags($_POST['isi']);
+$isi     = strip_tags($_POST['isi']);
 $penulis = $_POST['penulis'];
 $tanggal = date('Y-m-d');
 
@@ -31,10 +31,8 @@ if (move_uploaded_file($tmp_gambar, $folder . $nama_baru)) {
             VALUES ('$judul_safe','$isi_safe','$nama_baru','$tanggal','$penulis_safe')";
 
     if (mysqli_query($koneksi, $sql)) {
-        // ── Tambah notifikasi ──
         tambah_notif('berita', 'Berita baru dipublikasikan', '"' . $judul . '" oleh ' . $penulis);
-
-        echo "<script>alert('Berita berhasil disimpan');window.location='input_berita.php';</script>";
+        echo "<script>alert('Berita berhasil disimpan');window.location='data_berita.php';</script>";
     } else {
         echo "Gagal menyimpan data";
     }

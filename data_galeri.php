@@ -55,7 +55,7 @@ $data = mysqli_query(
  <div class="container-fluid">
  <div class="card">
  <div class="card-header">
- <h3 class="card-title">Daftar Galeri</h3>
+ <h5 class="fw-bold mb-0">Daftar Galeri</h5>
  </div>
  <div class="card-body table-responsive">
  <table class="table table-bordered table-striped align-middle">

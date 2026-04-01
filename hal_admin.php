@@ -1,35 +1,27 @@
 <?php
-// JANGAN panggil session_start() di sini — sudah ada di header.php
-include "template/header.php"; // header.php sudah handle session + $koneksi
+include "template/header.php";
 include "template/menu.php";
 include "../koneksi.php";
-// $koneksi sudah tersedia dari header.php
 
-// ── Stats ─────────────────────────────────────────────────────
-$total_berita  = (int)mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) c FROM berita"))['c'];
-$total_galeri  = (int)mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) c FROM galeri"))['c'];
-$total_guru    = (int)mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) c FROM guru"))['c'];
-$total_kontak  = (int)mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) c FROM kontak"))['c'];
+$total_berita = (int)mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) c FROM berita"))['c'];
+$total_galeri = (int)mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) c FROM galeri"))['c'];
+$total_guru   = (int)mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) c FROM guru"))['c'];
+$total_kontak = (int)mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) c FROM kontak"))['c'];
 
-// ── Profil sekolah ────────────────────────────────────────────
 $profil = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT * FROM profil_sekolah LIMIT 1")) ?: [];
 
-// ── Berita terbaru (5) ────────────────────────────────────────
 $berita_recent = [];
-$r = mysqli_query($koneksi, "SELECT judul, penulis, tanggal FROM berita ORDER BY tanggal DESC LIMIT 5");
+$r = mysqli_query($koneksi, "SELECT id, judul, penulis, tanggal FROM berita ORDER BY tanggal DESC LIMIT 5");
 while ($d = mysqli_fetch_assoc($r)) $berita_recent[] = $d;
 
-// ── Guru per mapel (untuk chart donut) ───────────────────────
 $guru_mapel = [];
 $r = mysqli_query($koneksi, "SELECT mapel, COUNT(*) c FROM guru GROUP BY mapel ORDER BY c DESC LIMIT 6");
 while ($d = mysqli_fetch_assoc($r)) $guru_mapel[] = $d;
 
-// ── Kontak terbaru ────────────────────────────────────────────
 $kontak_recent = [];
 $r = mysqli_query($koneksi, "SELECT nama, email, tanggal_kirim FROM kontak ORDER BY tanggal_kirim DESC LIMIT 5");
 while ($d = mysqli_fetch_assoc($r)) $kontak_recent[] = $d;
 
-// ── Berita per bulan (chart) ──────────────────────────────────
 $chart_labels = [];
 $chart_data   = [];
 $r = mysqli_query($koneksi, "SELECT DATE_FORMAT(tanggal,'%b %Y') lbl, COUNT(*) c FROM berita GROUP BY DATE_FORMAT(tanggal,'%Y-%m') ORDER BY tanggal DESC LIMIT 6");
@@ -43,14 +35,11 @@ foreach ($rows_chart as $rc) {
 ?>
 <main class="app-main">
 
-  <!-- ── Breadcrumb ── -->
   <div class="app-content-header">
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-6">
-          <h3 class="mb-0" style="font-family:'Outfit',sans-serif;font-weight:800;color:#0F172A;">
-            Dashboard
-          </h3>
+          <h3 class="mb-0" style="font-family:'Outfit',sans-serif;font-weight:800;color:#0F172A;">Dashboard</h3>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-end">
@@ -65,12 +54,8 @@ foreach ($rows_chart as $rc) {
   <div class="app-content">
     <div class="container-fluid">
 
-      <!-- ════════════════════
-           STAT CARDS
-      ════════════════════ -->
+      <!-- STAT CARDS -->
       <div class="row g-3 mb-4">
-
-        <!-- Berita -->
         <div class="col-sm-6 col-xl-3">
           <a href="data_berita.php" class="text-decoration-none">
             <div class="card border-0 shadow-sm h-100" style="border-radius:14px;overflow:hidden;">
@@ -87,13 +72,10 @@ foreach ($rows_chart as $rc) {
                 <div class="mt-3 d-flex align-items-center gap-1" style="color:#3B82F6;font-size:12px;font-weight:600;">
                   <i class="bi bi-arrow-right-short"></i> Lihat semua berita
                 </div>
-                <div style="position:absolute;bottom:-15px;right:-15px;width:80px;height:80px;border-radius:50%;background:#EFF6FF;opacity:.6;"></div>
               </div>
             </div>
           </a>
         </div>
-
-        <!-- Galeri -->
         <div class="col-sm-6 col-xl-3">
           <a href="data_galeri.php" class="text-decoration-none">
             <div class="card border-0 shadow-sm h-100" style="border-radius:14px;overflow:hidden;">
@@ -110,13 +92,10 @@ foreach ($rows_chart as $rc) {
                 <div class="mt-3 d-flex align-items-center gap-1" style="color:#8B5CF6;font-size:12px;font-weight:600;">
                   <i class="bi bi-arrow-right-short"></i> Lihat semua galeri
                 </div>
-                <div style="position:absolute;bottom:-15px;right:-15px;width:80px;height:80px;border-radius:50%;background:#F5F3FF;opacity:.6;"></div>
               </div>
             </div>
           </a>
         </div>
-
-        <!-- Guru -->
         <div class="col-sm-6 col-xl-3">
           <a href="data_guru.php" class="text-decoration-none">
             <div class="card border-0 shadow-sm h-100" style="border-radius:14px;overflow:hidden;">
@@ -133,13 +112,10 @@ foreach ($rows_chart as $rc) {
                 <div class="mt-3 d-flex align-items-center gap-1" style="color:#22C55E;font-size:12px;font-weight:600;">
                   <i class="bi bi-arrow-right-short"></i> Lihat data guru
                 </div>
-                <div style="position:absolute;bottom:-15px;right:-15px;width:80px;height:80px;border-radius:50%;background:#F0FDF4;opacity:.6;"></div>
               </div>
             </div>
           </a>
         </div>
-
-        <!-- Kontak -->
         <div class="col-sm-6 col-xl-3">
           <a href="data_kontak.php" class="text-decoration-none">
             <div class="card border-0 shadow-sm h-100" style="border-radius:14px;overflow:hidden;">
@@ -156,22 +132,14 @@ foreach ($rows_chart as $rc) {
                 <div class="mt-3 d-flex align-items-center gap-1" style="color:#F97316;font-size:12px;font-weight:600;">
                   <i class="bi bi-arrow-right-short"></i> Lihat semua pesan
                 </div>
-                <div style="position:absolute;bottom:-15px;right:-15px;width:80px;height:80px;border-radius:50%;background:#FFF7ED;opacity:.6;"></div>
               </div>
             </div>
           </a>
         </div>
-
       </div>
-      <!-- ══ END STAT CARDS ══ -->
 
-
-      <!-- ════════════════════
-           ROW 2: Chart + Profil
-      ════════════════════ -->
+      <!-- ROW 2: Chart + Profil -->
       <div class="row g-3 mb-4">
-
-        <!-- Chart Berita per Bulan -->
         <div class="col-lg-7">
           <div class="card border-0 shadow-sm" style="border-radius:14px;">
             <div class="card-header border-0 pt-3 px-4 pb-0 bg-white" style="border-radius:14px 14px 0 0;">
@@ -190,8 +158,6 @@ foreach ($rows_chart as $rc) {
             </div>
           </div>
         </div>
-
-        <!-- Profil Sekolah -->
         <div class="col-lg-5">
           <div class="card border-0 shadow-sm h-100" style="border-radius:14px;">
             <div class="card-header border-0 pt-3 px-4 pb-0 bg-white" style="border-radius:14px 14px 0 0;">
@@ -202,12 +168,12 @@ foreach ($rows_chart as $rc) {
               <?php if ($profil): ?>
                 <?php
                 $rows_profil = [
-                  ['bi bi-building-fill text-primary', 'Nama Sekolah', $profil['nama_sekolah']],
-                  ['bi bi-hash text-warning',           'NPSN',         $profil['npsn']],
-                  ['bi bi-geo-alt-fill text-danger',    'Kabupaten',    $profil['kabupaten']],
-                  ['bi bi-person-badge-fill text-info', 'Kepala Sekolah', $profil['kepala_sekolah']],
-                  ['bi bi-globe text-success',          'Website',      $profil['website']],
-                  ['bi bi-envelope-fill text-warning',  'Email',        $profil['email']],
+                  ['bi bi-building-fill text-primary',  'Nama Sekolah',    $profil['nama_sekolah']],
+                  ['bi bi-hash text-warning',            'NPSN',            $profil['npsn']],
+                  ['bi bi-geo-alt-fill text-danger',     'Kabupaten',       $profil['kabupaten']],
+                  ['bi bi-person-badge-fill text-info',  'Kepala Sekolah',  $profil['kepala_sekolah']],
+                  ['bi bi-globe text-success',           'Website',         $profil['website']],
+                  ['bi bi-envelope-fill text-warning',   'Email',           $profil['email']],
                 ];
                 foreach ($rows_profil as [$icon, $lbl, $val]):
                 ?>
@@ -238,23 +204,14 @@ foreach ($rows_chart as $rc) {
             </div>
           </div>
         </div>
-
       </div>
-      <!-- ══ END ROW 2 ══ -->
 
-
-      <!-- ════════════════════
-           ROW 3: Recent Activity
-      ════════════════════ -->
+      <!-- ROW 3: Recent Activity -->
       <div class="row g-3">
-
-        <!-- Berita Terbaru -->
         <div class="col-lg-6">
           <div class="card border-0 shadow-sm" style="border-radius:14px;">
             <div class="card-header border-0 pt-3 px-4 pb-0 bg-white d-flex justify-content-between align-items-center" style="border-radius:14px 14px 0 0;">
-              <div>
-                <h5 class="mb-0 fw-bold" style="font-family:'Outfit',sans-serif;">Berita Terbaru</h5>
-              </div>
+              <h5 class="mb-0 fw-bold" style="font-family:'Outfit',sans-serif;">Berita Terbaru</h5>
               <a href="data_berita.php" class="text-primary text-decoration-none" style="font-size:12px;font-weight:600;">Lihat semua →</a>
             </div>
             <div class="card-body px-4 pb-4">
@@ -268,7 +225,8 @@ foreach ($rows_chart as $rc) {
                     <div class="fw-semibold text-truncate" style="font-size:13px;max-width:280px;"><?= htmlspecialchars($b['judul']) ?></div>
                     <div style="font-size:11px;color:#94A3B8;"><?= htmlspecialchars($b['penulis']) ?> · <?= $b['tanggal'] ?></div>
                   </div>
-                  <a href="edit_berita.php?id=0" class="btn btn-sm" style="padding:3px 8px;border-radius:6px;background:#F1F5F9;color:#475569;font-size:12px;">
+                  <!-- Fix: pakai ID berita yang benar -->
+                  <a href="edit_berita.php?id=<?= $b['id'] ?>" class="btn btn-sm" style="padding:3px 8px;border-radius:6px;background:#F1F5F9;color:#475569;font-size:12px;">
                     <i class="bi bi-pencil"></i>
                   </a>
                 </div>
@@ -277,14 +235,10 @@ foreach ($rows_chart as $rc) {
             </div>
           </div>
         </div>
-
-        <!-- Kontak Terbaru -->
         <div class="col-lg-6">
           <div class="card border-0 shadow-sm" style="border-radius:14px;">
             <div class="card-header border-0 pt-3 px-4 pb-0 bg-white d-flex justify-content-between align-items-center" style="border-radius:14px 14px 0 0;">
-              <div>
-                <h5 class="mb-0 fw-bold" style="font-family:'Outfit',sans-serif;">Pesan Kontak Terbaru</h5>
-              </div>
+              <h5 class="mb-0 fw-bold" style="font-family:'Outfit',sans-serif;">Pesan Kontak Terbaru</h5>
               <a href="data_kontak.php" class="text-primary text-decoration-none" style="font-size:12px;font-weight:600;">Lihat semua →</a>
             </div>
             <div class="card-body px-4 pb-4">
@@ -306,15 +260,12 @@ foreach ($rows_chart as $rc) {
             </div>
           </div>
         </div>
-
       </div>
-      <!-- ══ END ROW 3 ══ -->
 
     </div>
   </div>
 </main>
 
-<!-- Chart data inject -->
 <script>
   window.chartBeritaData   = <?= json_encode($chart_data) ?>;
   window.chartBeritaLabels = <?= json_encode($chart_labels) ?>;

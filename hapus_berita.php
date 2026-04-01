@@ -1,10 +1,14 @@
 <?php
-// koneksi database
 include '../koneksi.php';
-// menangkap data id yang di kirim dari url
-$id = $_GET['id'];
-// menghapus data dari database
-mysqli_query($koneksi,"delete from berita where id='$id'");
-// mengalihkan halaman kembali ke data_kontak.php
+
+$id = (int)$_GET['id'];
+
+// Ambil nama gambar sebelum dihapus
+$q = mysqli_query($koneksi, "SELECT gambar FROM berita WHERE id='$id'");
+$d = mysqli_fetch_assoc($q);
+if ($d && !empty($d['gambar']) && file_exists("upload/" . $d['gambar'])) {
+    unlink("upload/" . $d['gambar']);
+}
+
+mysqli_query($koneksi, "DELETE FROM berita WHERE id='$id'");
 header("location:data_berita.php");
-?>

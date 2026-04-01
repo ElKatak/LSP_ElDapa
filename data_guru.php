@@ -102,7 +102,7 @@ $data = mysqli_query($koneksi, "SELECT * FROM guru ORDER BY id DESC LIMIT $limit
                 <th width="80">Foto</th>
                 <th>Email</th>
                 <th>No HP</th>
-                <th width="100" class="text-center">Aksi</th>
+                <th width="160" class="text-center">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -126,18 +126,16 @@ $data = mysqli_query($koneksi, "SELECT * FROM guru ORDER BY id DESC LIMIT $limit
                 <td><?= $d['no_hp'] ?></td>
                 <td class="text-center">
 
-                    <button class="btn btn-sm btn-info me-1" title="Lihat Detail"
-                        onclick="viewGuru({
-                        nama:  '<?= htmlspecialchars($d['nama_guru'], ENT_QUOTES) ?>',
-                        nip:   '<?= htmlspecialchars($d['nip'], ENT_QUOTES) ?>',
-                        jk:    '<?= $d['jenis_kelamin'] ?>',
-                        mapel: '<?= htmlspecialchars($d['mapel'], ENT_QUOTES) ?>',
-                        email: '<?= htmlspecialchars($d['email'], ENT_QUOTES) ?>',
-                        hp:    '<?= $d['no_hp'] ?>',
-                        foto:  '<?= $d['foto'] ?>'
-                        })">
-                        <i class="bi bi-eye-fill"></i>
-                    </button>
+                    <button class="btn btn-sm btn-info me-1 btn-view-guru" title="Lihat Detail"
+  data-nama="<?= htmlspecialchars($d['nama_guru'], ENT_QUOTES) ?>"
+  data-nip="<?= htmlspecialchars($d['nip'], ENT_QUOTES) ?>"
+  data-jk="<?= htmlspecialchars($d['jenis_kelamin'], ENT_QUOTES) ?>"
+  data-mapel="<?= htmlspecialchars($d['mapel'], ENT_QUOTES) ?>"
+  data-email="<?= htmlspecialchars($d['email'], ENT_QUOTES) ?>"
+  data-hp="<?= htmlspecialchars($d['no_hp'], ENT_QUOTES) ?>"
+  data-foto="<?= htmlspecialchars($d['foto'], ENT_QUOTES) ?>">
+  <i class="bi bi-eye-fill"></i>
+</button>
 
                   <?php if (can_write()): ?>
                     <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#edit<?= $d['id'] ?>" title="Edit">
@@ -296,23 +294,32 @@ $data = mysqli_query($koneksi, "SELECT * FROM guru ORDER BY id DESC LIMIT $limit
 </div>
 
 <script>
-function viewGuru(d) {
-  // Foto atau avatar fallback
-  document.getElementById('vg-foto-wrap').innerHTML = d.foto
-    ? `<img src="upload/${d.foto}" style="width:70px;height:70px;border-radius:14px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,.12);">`
-    : `<div style="width:70px;height:70px;border-radius:14px;background:linear-gradient(135deg,#3B82F6,#06B6D4);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;">
-         ${d.nama.trim().split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase()}
-       </div>`;
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.btn-view-guru');
+  if (!btn) return;
 
-  document.getElementById('vg-nama').textContent  = d.nama  || '—';
-  document.getElementById('vg-mapel').textContent = d.mapel ? '📚 ' + d.mapel : '—';
-  document.getElementById('vg-nip').textContent   = d.nip   || '—';
-  document.getElementById('vg-jk').textContent    = d.jk    || '—';
-  document.getElementById('vg-email').textContent = d.email || '—';
-  document.getElementById('vg-hp').textContent    = d.hp    || '—';
+  const nama  = btn.dataset.nama  || '—';
+  const nip   = btn.dataset.nip   || '—';
+  const jk    = btn.dataset.jk    || '—';
+  const mapel = btn.dataset.mapel || '—';
+  const email = btn.dataset.email || '—';
+  const hp    = btn.dataset.hp    || '—';
+  const foto  = btn.dataset.foto  || '';
+
+  const initials = nama.trim().split(' ').map(w => w[0] || '').join('').substring(0, 2).toUpperCase();
+  document.getElementById('vg-foto-wrap').innerHTML = foto
+    ? `<img src="upload/${foto}" style="width:70px;height:70px;border-radius:14px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,.12);">`
+    : `<div style="width:70px;height:70px;border-radius:14px;background:linear-gradient(135deg,#3B82F6,#06B6D4);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;">${initials}</div>`;
+
+  document.getElementById('vg-nama').textContent  = nama;
+  document.getElementById('vg-mapel').textContent = mapel ? '📚 ' + mapel : '—';
+  document.getElementById('vg-nip').textContent   = nip;
+  document.getElementById('vg-jk').textContent    = jk;
+  document.getElementById('vg-email').textContent = email;
+  document.getElementById('vg-hp').textContent    = hp;
 
   new bootstrap.Modal(document.getElementById('modalViewGuru')).show();
-}
+});
 </script>
 </main>
 <?php include "template/footer.php"; ?>

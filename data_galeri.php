@@ -67,7 +67,7 @@ $data = mysqli_query($koneksi, "SELECT * FROM galeri ORDER BY id DESC LIMIT $lim
                 <th>Deskripsi</th>
                 <th width="120">Gambar</th>
                 <th width="130">Tanggal Upload</th>
-                <th width="100" class="text-center">Aksi</th>
+                <th width="160" class="text-center">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -88,13 +88,11 @@ $data = mysqli_query($koneksi, "SELECT * FROM galeri ORDER BY id DESC LIMIT $lim
                 <td><?= $d['tanggal_upload'] ?></td>
                 <td class="text-center">
 
-                    <button class="btn btn-sm btn-info me-1" title="Lihat Detail"
-                    onclick="viewGaleri({
-                        judul:   '<?= htmlspecialchars($d['judul'], ENT_QUOTES) ?>',
-                        desk:    <?= json_encode(strip_tags($d['deskripsi'])) ?>,
-                        tanggal: '<?= $d['tanggal_upload'] ?>',
-                        gambar:  '<?= $d['gambar'] ?>'
-                    })">
+                    <button class="btn btn-sm btn-info me-1 btn-view-galeri" title="Lihat Detail"
+                    data-judul="<?= htmlspecialchars($d['judul'], ENT_QUOTES) ?>"
+                    data-desk="<?= htmlspecialchars(strip_tags($d['deskripsi']), ENT_QUOTES) ?>"
+                    data-tanggal="<?= htmlspecialchars($d['tanggal_upload'], ENT_QUOTES) ?>"
+                    data-gambar="<?= htmlspecialchars($d['gambar'], ENT_QUOTES) ?>">
                     <i class="bi bi-eye-fill"></i>
                     </button>   
 
@@ -164,15 +162,24 @@ $data = mysqli_query($koneksi, "SELECT * FROM galeri ORDER BY id DESC LIMIT $lim
 </div>
 
 <script>
-function viewGaleri(d) {
-  document.getElementById('vgal-gambar-wrap').innerHTML = d.gambar
-    ? `<img src="upload/${d.gambar}" style="width:100%;height:220px;object-fit:cover;border-radius:12px;">`
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.btn-view-galeri');
+  if (!btn) return;
+
+  const gambar  = btn.dataset.gambar;
+  const judul   = btn.dataset.judul   || '—';
+  const desk    = btn.dataset.desk    || '—';
+  const tanggal = btn.dataset.tanggal || '—';
+
+  document.getElementById('vgal-gambar-wrap').innerHTML = gambar
+    ? `<img src="upload/${gambar}" style="width:100%;height:220px;object-fit:cover;border-radius:12px;">`
     : `<div style="width:100%;height:80px;background:#F1F5F9;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#94A3B8;"><i class="bi bi-image fs-3"></i></div>`;
-  document.getElementById('vgal-judul').textContent   = d.judul;
-  document.getElementById('vgal-tanggal').textContent = d.tanggal || '—';
-  document.getElementById('vgal-desk').textContent    = d.desk || '—';
+  document.getElementById('vgal-judul').textContent   = judul;
+  document.getElementById('vgal-tanggal').textContent = tanggal;
+  document.getElementById('vgal-desk').textContent    = desk;
+
   new bootstrap.Modal(document.getElementById('modalViewGaleri')).show();
-}
+});
 </script>
 </main>
 <?php include "template/footer.php"; ?>

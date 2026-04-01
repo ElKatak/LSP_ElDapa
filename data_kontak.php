@@ -51,7 +51,7 @@ $data = mysqli_query($koneksi, "SELECT * FROM kontak ORDER BY tanggal_kirim DESC
                 <th>Email</th>
                 <th>Pesan</th>
                 <th width="150">Tanggal Kirim</th>
-                <th width="100" class="text-center">Aksi</th>
+                <th width="160" class="text-center">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -116,6 +116,38 @@ $data = mysqli_query($koneksi, "SELECT * FROM kontak ORDER BY tanggal_kirim DESC
       </div>
     </div>
   </div>
+  <!-- MODAL VIEW KONTAK — wajib ada, jangan dihapus -->
+<div class="modal fade" id="modalViewKontak" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:16px;border:none;">
+
+      <div class="modal-header border-0 px-4 pt-4 pb-0">
+        <h5 class="fw-bold mb-0" style="font-family:'Outfit',sans-serif;">
+          <i class="bi bi-envelope-fill text-warning me-2"></i>Detail Pesan Kontak
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body px-4 pb-4">
+        <div class="d-flex align-items-center gap-3 p-3 mb-3"
+             style="background:#F8FAFC;border-radius:12px;">
+          <div id="vk-avatar"></div>
+          <div>
+            <div id="vk-nama"    style="font-weight:700;font-size:15px;color:#0F172A;"></div>
+            <div id="vk-email"   style="font-size:12px;color:#3B82F6;"></div>
+            <div id="vk-tanggal" style="font-size:11px;color:#94A3B8;margin-top:2px;"></div>
+          </div>
+        </div>
+        <div style="background:#F8FAFC;border-radius:12px;padding:16px;">
+          <div style="font-size:11px;color:#94A3B8;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Isi Pesan</div>
+          <p id="vk-pesan"
+             style="font-size:14px;color:#334155;line-height:1.8;margin:0;white-space:pre-wrap;max-height:200px;overflow-y:auto;"></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
   <script>
 // Pakai event delegation — aman untuk konten dinamis/pagination
 document.addEventListener('click', function(e) {

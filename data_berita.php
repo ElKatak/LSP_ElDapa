@@ -52,7 +52,7 @@ $data = mysqli_query($koneksi, "SELECT * FROM berita ORDER BY id DESC LIMIT $lim
                 <th width="100">Gambar</th>
                 <th width="110">Tanggal</th>
                 <th>Penulis</th>
-                <th width="100" class="text-center">Aksi</th>
+                <th width="160" class="text-center">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -74,16 +74,14 @@ $data = mysqli_query($koneksi, "SELECT * FROM berita ORDER BY id DESC LIMIT $lim
                 <td><?= htmlspecialchars($d['penulis']) ?></td>
                 <td class="text-center">
 
-                    <button class="btn btn-sm btn-info me-1" title="Lihat Detail"
-                    onclick="viewBerita({
-                        judul:   '<?= htmlspecialchars($d['judul'], ENT_QUOTES) ?>',
-                        isi:     <?= json_encode(strip_tags($d['isi'])) ?>,
-                        penulis: '<?= htmlspecialchars($d['penulis'], ENT_QUOTES) ?>',
-                        tanggal: '<?= $d['tanggal'] ?>',
-                        gambar:  '<?= $d['gambar'] ?>'
-                    })">
-                    <i class="bi bi-eye-fill"></i>
-                    </button>
+                    <button class="btn btn-sm btn-info me-1 btn-view-berita" title="Lihat Detail"
+  data-judul="<?= htmlspecialchars($d['judul'], ENT_QUOTES) ?>"
+  data-isi="<?= htmlspecialchars(strip_tags($d['isi']), ENT_QUOTES) ?>"
+  data-penulis="<?= htmlspecialchars($d['penulis'], ENT_QUOTES) ?>"
+  data-tanggal="<?= htmlspecialchars($d['tanggal'], ENT_QUOTES) ?>"
+  data-gambar="<?= htmlspecialchars($d['gambar'], ENT_QUOTES) ?>">
+  <i class="bi bi-eye-fill"></i>
+</button>
 
                   <?php if (can_write()): ?>
                     <a href="edit_berita.php?id=<?= $d['id'] ?>" class="btn btn-sm btn-warning me-1" title="Edit">
@@ -125,8 +123,8 @@ $data = mysqli_query($koneksi, "SELECT * FROM berita ORDER BY id DESC LIMIT $lim
       </div>
     </div>
   </div>
-  
-  <!-- MODAL VIEW BERITA -->
+
+<!-- MODAL VIEW BERITA -->
 <div class="modal fade" id="modalViewBerita" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content" style="border-radius:16px;border:none;">
@@ -157,18 +155,28 @@ $data = mysqli_query($koneksi, "SELECT * FROM berita ORDER BY id DESC LIMIT $lim
     </div>
   </div>
 </div>
+                <script>
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.btn-view-berita');
+  if (!btn) return;
 
-<script>
-function viewBerita(d) {
-  document.getElementById('vb-gambar-wrap').innerHTML = d.gambar
-    ? `<img src="upload/${d.gambar}" style="width:100%;height:200px;object-fit:cover;border-radius:12px;">`
+  const gambar  = btn.dataset.gambar;
+  const judul   = btn.dataset.judul   || '—';
+  const isi     = btn.dataset.isi     || '—';
+  const penulis = btn.dataset.penulis || '—';
+  const tanggal = btn.dataset.tanggal || '—';
+
+  document.getElementById('vb-gambar-wrap').innerHTML = gambar
+    ? `<img src="upload/${gambar}" style="width:100%;height:200px;object-fit:cover;border-radius:12px;">`
     : '';
-  document.getElementById('vb-judul').textContent   = d.judul;
-  document.getElementById('vb-penulis').textContent = d.penulis || '—';
-  document.getElementById('vb-tanggal').textContent = d.tanggal || '—';
-  document.getElementById('vb-isi').textContent     = d.isi || '—';
+  document.getElementById('vb-judul').textContent   = judul;
+  document.getElementById('vb-penulis').textContent = penulis;
+  document.getElementById('vb-tanggal').textContent = tanggal;
+  document.getElementById('vb-isi').textContent     = isi;
+
   new bootstrap.Modal(document.getElementById('modalViewBerita')).show();
-}
+});
 </script>
+
 </main>
 <?php include "template/footer.php"; ?>

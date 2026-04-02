@@ -84,6 +84,7 @@
       align-items: center;
       gap: 14px;
       text-decoration: none;
+      flex-shrink: 0;
     }
     .school-logo {
       width: 54px;
@@ -106,15 +107,40 @@
       text-transform: uppercase;
       margin-top: 1px;
     }
+
+    /* ── MAIN NAV ── */
+    .main-nav {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .main-nav a {
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .main-nav a:hover {
+      background: #EFF6FF;
+      color: var(--blue);
+    }
+    .main-nav a.active {
+      background: var(--blue);
+      color: #fff;
+    }
     .btn-login {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 24px;
+      padding: 9px 20px;
       background: linear-gradient(135deg, var(--blue), var(--blue2));
       color: #fff;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 700;
       border-radius: 10px;
       text-decoration: none;
@@ -123,6 +149,7 @@
       transition: transform .15s, box-shadow .15s;
       position: relative;
       overflow: hidden;
+      margin-left: 8px;
     }
     .btn-login::before {
       content: '';
@@ -136,6 +163,45 @@
     }
     .btn-login:active { transform: translateY(0); }
 
+    /* Mobile Hamburger */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--navy);
+      cursor: pointer;
+      padding: 4px;
+    }
+    .mobile-nav {
+      display: none;
+      background: #fff;
+      border-top: 1px solid #E8F0FB;
+      padding: 12px 20px 16px;
+      box-shadow: 0 8px 20px rgba(18,85,164,.1);
+    }
+    .mobile-nav.open { display: block; }
+    .mobile-nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      transition: background .12s;
+      margin-bottom: 4px;
+    }
+    .mobile-nav a:hover { background: #EFF6FF; color: var(--blue); }
+    .mobile-nav .mobile-login {
+      background: linear-gradient(135deg,var(--blue),var(--blue2));
+      color: #fff !important;
+      margin-top: 8px;
+      justify-content: center;
+    }
+
     /* ── HERO ── */
     .hero {
       position: relative;
@@ -147,7 +213,6 @@
       justify-content: flex-start;
     }
 
-    /* Sky gradient background */
     .hero-sky {
       position: absolute;
       inset: 0;
@@ -163,12 +228,7 @@
       z-index: 0;
     }
 
-    /* Animated clouds */
-    .cloud {
-      position: absolute;
-      z-index: 1;
-      opacity: 0.9;
-    }
+    .cloud { position: absolute; z-index: 1; opacity: 0.9; }
     .cloud-1 { top: 8%; left: 5%; animation: drift1 18s ease-in-out infinite alternate; }
     .cloud-2 { top: 14%; right: 8%; animation: drift2 22s ease-in-out infinite alternate; }
     .cloud-3 { top: 28%; left: 50%; transform: translateX(-50%); animation: drift1 26s ease-in-out infinite alternate-reverse; opacity: 0.5; }
@@ -176,16 +236,8 @@
     @keyframes drift1 { 0% { transform: translateX(0); } 100% { transform: translateX(30px); } }
     @keyframes drift2 { 0% { transform: translateX(0); } 100% { transform: translateX(-25px); } }
 
-    /* Sun */
-    .sun {
-      position: absolute;
-      top: 6%;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1;
-    }
+    .sun { position: absolute; top: 6%; left: 50%; transform: translateX(-50%); z-index: 1; }
 
-    /* School name badge overlay */
     .hero-badge {
       position: relative;
       z-index: 10;
@@ -201,36 +253,52 @@
       to   { opacity:1; transform: translateY(0); }
     }
     .hero-badge .badge-logo {
-      width: 74px;
-      height: 74px;
-      border-radius: 50%;
+      width: 74px; height: 74px; border-radius: 50%;
       background: white;
       box-shadow: 0 6px 24px rgba(18,85,164,.25), 0 0 0 4px rgba(255,255,255,0.6);
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden;
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
     }
-    .hero-badge .school-title {
-      text-align: center;
-    }
+    .hero-badge .school-title { text-align: center; }
     .hero-badge .school-title .big {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 900;
-      font-size: 28px;
-      color: var(--navy);
-      line-height: 1.15;
-      text-shadow: 0 2px 8px rgba(255,255,255,0.8);
-      letter-spacing: -0.5px;
+      font-weight: 900; font-size: 28px; color: var(--navy); line-height: 1.15;
+      text-shadow: 0 2px 8px rgba(255,255,255,0.8); letter-spacing: -0.5px;
     }
     .hero-badge .school-title .small {
-      font-size: 13px;
-      color: var(--blue);
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-top: 2px;
+      font-size: 13px; color: var(--blue); font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;
     }
 
-    /* Building SVG */
+    /* Quick links */
+    .hero-quicklinks {
+      position: relative;
+      z-index: 10;
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeDown .8s .15s ease both;
+    }
+    .ql-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 20px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      backdrop-filter: blur(10px);
+      transition: transform .15s, box-shadow .15s;
+      border: 1.5px solid rgba(255,255,255,.7);
+    }
+    .ql-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.12); }
+    .ql-btn-berita { background: rgba(255,255,255,.85); color: var(--navy); }
+    .ql-btn-galeri { background: rgba(18,85,164,.85); color: #fff; }
+    .ql-btn-guru   { background: rgba(240,165,0,.85); color: var(--navy); }
+    .ql-btn-profil { background: rgba(255,255,255,.65); color: var(--navy); }
+
     .hero-building {
       position: relative;
       z-index: 5;
@@ -241,64 +309,36 @@
       flex-shrink: 0;
     }
 
-    /* Ground strip with school name sign */
     .hero-ground {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 6;
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 6;
       height: 120px;
       background: linear-gradient(180deg, #6B4C1E 0%, #8B6234 30%, #7A5528 100%);
     }
     .hero-sign {
-      position: absolute;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
+      position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
       z-index: 20;
-      background: #FFF8E1;
-      border: 4px solid var(--navy);
-      border-radius: 4px;
-      padding: 10px 48px;
-      text-align: center;
-      box-shadow: 0 4px 16px rgba(0,0,0,.25);
-      white-space: nowrap;
+      background: #FFF8E1; border: 4px solid var(--navy); border-radius: 4px;
+      padding: 10px 48px; text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,.25); white-space: nowrap;
     }
-    .hero-sign .sign-main {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 900;
-      font-size: 22px;
-      color: var(--blue);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-    .hero-sign .sign-sub {
-      font-size: 11.5px;
-      color: var(--text);
-      font-weight: 500;
-      margin-top: 1px;
-    }
+    .hero-sign .sign-main { font-family:'Plus Jakarta Sans',sans-serif; font-weight:900; font-size:22px; color:var(--blue); letter-spacing:1.5px; text-transform:uppercase; }
+    .hero-sign .sign-sub { font-size:11.5px; color:var(--text); font-weight:500; margin-top:1px; }
 
-    /* Footer strip */
     .footer-strip {
-      background: var(--navy);
-      color: rgba(255,255,255,0.6);
-      text-align: center;
-      font-size: 12px;
-      padding: 14px 20px;
-      font-weight: 500;
+      background: var(--navy); color: rgba(255,255,255,0.6);
+      text-align: center; font-size: 12px; padding: 14px 20px; font-weight: 500;
     }
     .footer-strip span { color: var(--gold); font-weight: 700; }
 
-    @media (max-width: 640px) {
+    @media (max-width: 900px) {
+      .main-nav { display: none; }
+      .nav-toggle { display: block; }
       .topbar-inner { gap: 14px; flex-direction: column; }
       .hero-badge .school-title .big { font-size: 20px; }
       .hero-sign .sign-main { font-size: 15px; }
       .hero-sign { padding: 8px 24px; bottom: 80px; }
       .header-inner { height: 64px; }
       .school-name-wrap .name { font-size: 14px; }
-      .btn-login { padding: 8px 16px; font-size: 13px; }
     }
   </style>
 </head>
@@ -307,18 +347,9 @@
 <!-- ── TOP INFO BAR ── -->
 <div class="topbar">
   <div class="topbar-inner">
-    <span class="topbar-item">
-      <i class="bi bi-geo-alt-fill"></i>
-      Jl. Perintis Kemerdekaan, Boyolali 57316, Jawa Tengah
-    </span>
-    <span class="topbar-item">
-      <i class="bi bi-telephone-fill"></i>
-      (0276) 321579
-    </span>
-    <span class="topbar-item">
-      <i class="bi bi-envelope-fill"></i>
-      info@ganeshatama-byi.sch.id
-    </span>
+    <span class="topbar-item"><i class="bi bi-geo-alt-fill"></i>Jl. Perintis Kemerdekaan, Boyolali 57316, Jawa Tengah</span>
+    <span class="topbar-item"><i class="bi bi-telephone-fill"></i>(0276) 321579</span>
+    <span class="topbar-item"><i class="bi bi-envelope-fill"></i>info@ganeshatama-byi.sch.id</span>
   </div>
 </div>
 
@@ -327,7 +358,6 @@
   <div class="header-inner">
     <!-- Logo + Nama -->
     <a href="index.php" class="school-brand">
-      <!-- SVG Logo placeholder -->
       <svg class="school-logo" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg">
         <circle cx="27" cy="27" r="27" fill="#0B1F3A"/>
         <circle cx="27" cy="27" r="23" fill="#1255A4"/>
@@ -341,18 +371,38 @@
       </div>
     </a>
 
-    <!-- Login Button -->
-    <a href="login.php" class="btn-login">
-      <i class="bi bi-box-arrow-in-right"></i>
-      Login
-    </a>
+    <!-- Main Navigation (desktop) -->
+    <nav class="main-nav">
+      <a href="index.php" class="active"><i class="bi bi-house-fill"></i> Beranda</a>
+      <a href="publik_berita.php"><i class="bi bi-newspaper"></i> Berita</a>
+      <a href="publik_galeri.php"><i class="bi bi-images"></i> Galeri</a>
+      <a href="publik_guru.php"><i class="bi bi-mortarboard-fill"></i> Guru</a>
+      <a href="publik_profil.php"><i class="bi bi-building-fill"></i> Profil Sekolah</a>
+      <a href="login.php" class="btn-login">
+        <i class="bi bi-box-arrow-in-right"></i> Login Admin
+      </a>
+    </nav>
+
+    <!-- Hamburger (mobile) -->
+    <button class="nav-toggle" id="navToggle" aria-label="Menu">
+      <i class="bi bi-list" id="navIcon"></i>
+    </button>
+  </div>
+
+  <!-- Mobile nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.php"><i class="bi bi-house-fill"></i> Beranda</a>
+    <a href="publik_berita.php"><i class="bi bi-newspaper"></i> Berita</a>
+    <a href="publik_galeri.php"><i class="bi bi-images"></i> Galeri</a>
+    <a href="publik_guru.php"><i class="bi bi-mortarboard-fill"></i> Guru</a>
+    <a href="publik_profil.php"><i class="bi bi-building-fill"></i> Profil Sekolah</a>
+    <a href="login.php" class="mobile-login"><i class="bi bi-box-arrow-in-right"></i> Login Admin</a>
   </div>
 </header>
 
 <!-- ── HERO SECTION ── -->
 <section class="hero">
 
-  <!-- Sky gradient -->
   <div class="hero-sky"></div>
 
   <!-- Sun -->
@@ -394,7 +444,7 @@
     </svg>
   </div>
 
-  <!-- School badge / title -->
+  <!-- Badge / title -->
   <div class="hero-badge">
     <div class="badge-logo">
       <svg viewBox="0 0 54 54" width="64" height="64" xmlns="http://www.w3.org/2000/svg">
@@ -411,7 +461,15 @@
     </div>
   </div>
 
-  <!-- Building Illustration (SVG) -->
+  <!-- Quick links -->
+  <div class="hero-quicklinks">
+    <a href="publik_berita.php" class="ql-btn ql-btn-berita"><i class="bi bi-newspaper"></i>Berita</a>
+    <a href="publik_galeri.php" class="ql-btn ql-btn-galeri"><i class="bi bi-images"></i>Galeri</a>
+    <a href="publik_guru.php" class="ql-btn ql-btn-guru"><i class="bi bi-mortarboard-fill"></i>Data Guru</a>
+    <a href="publik_profil.php" class="ql-btn ql-btn-profil"><i class="bi bi-building-fill"></i>Profil Sekolah</a>
+  </div>
+
+  <!-- Building Illustration (SVG) — sama persis dengan versi asli -->
   <div class="hero-building">
     <svg viewBox="0 0 960 420" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
 
@@ -423,7 +481,6 @@
       <rect x="30" y="290" width="14" height="60" fill="#4A7C1F"/>
       <ellipse cx="37" cy="275" rx="26" ry="30" fill="#3A6B15"/>
       <ellipse cx="37" cy="260" rx="20" ry="24" fill="#4A8B20"/>
-
       <rect x="80" y="300" width="12" height="50" fill="#4A7C1F"/>
       <ellipse cx="86" cy="287" rx="22" ry="26" fill="#3A6B15"/>
       <ellipse cx="86" cy="274" rx="17" ry="20" fill="#4A8B20"/>
@@ -432,76 +489,57 @@
       <rect x="880" y="290" width="14" height="60" fill="#4A7C1F"/>
       <ellipse cx="887" cy="275" rx="26" ry="30" fill="#3A6B15"/>
       <ellipse cx="887" cy="260" rx="20" ry="24" fill="#4A8B20"/>
-
       <rect x="840" y="300" width="12" height="50" fill="#4A7C1F"/>
       <ellipse cx="846" cy="287" rx="22" ry="26" fill="#3A6B15"/>
       <ellipse cx="846" cy="274" rx="17" ry="20" fill="#4A8B20"/>
 
-      <!-- ─── LEFT WING BUILDING ─── -->
+      <!-- LEFT WING -->
       <rect x="60" y="180" width="280" height="165" fill="#E8D5B0"/>
       <rect x="60" y="168" width="280" height="16" fill="#C4A265"/>
-      <!-- Windows left wing -->
       <?php for ($i = 0; $i < 5; $i++): ?>
       <rect x="<?= 80 + $i*50 ?>" y="200" width="30" height="40" rx="3" fill="#A8C4E0"/>
       <rect x="<?= 80 + $i*50 ?>" y="260" width="30" height="40" rx="3" fill="#A8C4E0"/>
       <line x1="<?= 95 + $i*50 ?>" y1="200" x2="<?= 95 + $i*50 ?>" y2="240" stroke="#6A9CC0" stroke-width="1"/>
       <line x1="<?= 80 + $i*50 ?>" y1="220" x2="<?= 110 + $i*50 ?>" y2="220" stroke="#6A9CC0" stroke-width="1"/>
       <?php endfor; ?>
-      <!-- Red accent band left -->
       <rect x="60" y="320" width="280" height="22" fill="#C0392B"/>
       <rect x="60" y="310" width="280" height="10" fill="#E74C3C"/>
 
-      <!-- ─── RIGHT WING BUILDING ─── -->
+      <!-- RIGHT WING -->
       <rect x="620" y="180" width="280" height="165" fill="#E8D5B0"/>
       <rect x="620" y="168" width="280" height="16" fill="#C4A265"/>
-      <!-- Windows right wing -->
       <?php for ($i = 0; $i < 5; $i++): ?>
       <rect x="<?= 640 + $i*50 ?>" y="200" width="30" height="40" rx="3" fill="#A8C4E0"/>
       <rect x="<?= 640 + $i*50 ?>" y="260" width="30" height="40" rx="3" fill="#A8C4E0"/>
       <line x1="<?= 655 + $i*50 ?>" y1="200" x2="<?= 655 + $i*50 ?>" y2="240" stroke="#6A9CC0" stroke-width="1"/>
       <line x1="<?= 640 + $i*50 ?>" y1="220" x2="<?= 670 + $i*50 ?>" y2="220" stroke="#6A9CC0" stroke-width="1"/>
       <?php endfor; ?>
-      <!-- Red accent band right -->
       <rect x="620" y="320" width="280" height="22" fill="#C0392B"/>
       <rect x="620" y="310" width="280" height="10" fill="#E74C3C"/>
 
-      <!-- ─── MAIN CENTER TOWER ─── -->
-      <!-- Tower body -->
+      <!-- CENTER TOWER -->
       <rect x="340" y="80" width="280" height="265" fill="#D4C4A0"/>
       <rect x="340" y="65" width="280" height="20" fill="#B8A070"/>
-
-      <!-- Tower roof/top -->
       <rect x="380" y="30" width="200" height="40" rx="4" fill="#0B1F3A"/>
       <rect x="400" y="15" width="160" height="20" rx="4" fill="#0B1F3A"/>
-      <!-- Roof accent -->
       <rect x="380" y="30" width="200" height="8" fill="#1255A4"/>
-
-      <!-- Tower pillar columns -->
       <rect x="350" y="140" width="18" height="205" rx="4" fill="#C4A870"/>
       <rect x="396" y="140" width="18" height="205" rx="4" fill="#C4A870"/>
       <rect x="546" y="140" width="18" height="205" rx="4" fill="#C4A870"/>
       <rect x="592" y="140" width="18" height="205" rx="4" fill="#C4A870"/>
-
-      <!-- Tower windows (top floor) -->
       <rect x="380" y="90" width="50" height="60" rx="3" fill="#B8D4F0" opacity="0.9"/>
       <rect x="455" y="90" width="50" height="60" rx="3" fill="#B8D4F0" opacity="0.9"/>
       <rect x="530" y="90" width="50" height="60" rx="3" fill="#B8D4F0" opacity="0.9"/>
-      <!-- Window dividers -->
       <line x1="405" y1="90" x2="405" y2="150" stroke="#7AA8D0" stroke-width="1"/>
       <line x1="480" y1="90" x2="480" y2="150" stroke="#7AA8D0" stroke-width="1"/>
       <line x1="555" y1="90" x2="555" y2="150" stroke="#7AA8D0" stroke-width="1"/>
       <line x1="380" y1="120" x2="430" y2="120" stroke="#7AA8D0" stroke-width="1"/>
       <line x1="455" y1="120" x2="505" y2="120" stroke="#7AA8D0" stroke-width="1"/>
       <line x1="530" y1="120" x2="580" y2="120" stroke="#7AA8D0" stroke-width="1"/>
-
-      <!-- Tower middle windows -->
       <rect x="362" y="175" width="38" height="50" rx="3" fill="#A8C4E0" opacity="0.85"/>
       <rect x="415" y="175" width="50" height="50" rx="3" fill="#A8C4E0" opacity="0.85"/>
-      <rect x="480" y="175" width="0" height="0" fill="none"/>
       <rect x="495" y="175" width="50" height="50" rx="3" fill="#A8C4E0" opacity="0.85"/>
       <rect x="560" y="175" width="38" height="50" rx="3" fill="#A8C4E0" opacity="0.85"/>
-
-      <!-- Center grand door/entrance arch -->
       <rect x="435" y="255" width="90" height="90" rx="0" fill="#0B1F3A" opacity="0.85"/>
       <path d="M435,255 Q480,220 525,255" fill="#1255A4" opacity="0.9"/>
       <rect x="445" y="270" width="30" height="75" rx="2" fill="#7AAAC8" opacity="0.7"/>
@@ -510,41 +548,29 @@
       <line x1="500" y1="270" x2="500" y2="345" stroke="#5A8AAA" stroke-width="1"/>
       <line x1="445" y1="307" x2="475" y2="307" stroke="#5A8AAA" stroke-width="1"/>
       <line x1="485" y1="307" x2="515" y2="307" stroke="#5A8AAA" stroke-width="1"/>
-
-      <!-- Red accent bands tower -->
       <rect x="340" y="330" width="280" height="14" fill="#C0392B"/>
       <rect x="340" y="320" width="280" height="12" fill="#E74C3C"/>
-
-      <!-- Blue accent stripe -->
       <rect x="340" y="132" width="280" height="10" fill="#1255A4"/>
 
-      <!-- Flag pole -->
+      <!-- Flag -->
       <line x1="480" y1="15" x2="480" y2="-20" stroke="#888" stroke-width="2.5"/>
       <rect x="480" y="-20" width="44" height="28" fill="#CC0000"/>
       <rect x="480" y="-6" width="44" height="14" fill="white"/>
 
-      <!-- Gate left -->
+      <!-- Gates -->
       <rect x="190" y="285" width="20" height="60" rx="2" fill="#F0A500"/>
       <rect x="168" y="270" width="24" height="80" rx="2" fill="#F0A500"/>
-      <!-- Gate bars left -->
       <?php for ($i = 0; $i < 6; $i++): ?>
       <rect x="<?= 192 + $i*5 ?>" y="295" width="3" height="50" rx="1" fill="#1255A4"/>
       <?php endfor; ?>
-
-      <!-- Gate right -->
       <rect x="750" y="285" width="20" height="60" rx="2" fill="#F0A500"/>
       <rect x="768" y="270" width="24" height="80" rx="2" fill="#F0A500"/>
-      <!-- Gate bars right -->
       <?php for ($i = 0; $i < 6; $i++): ?>
       <rect x="<?= 752 + $i*5 ?>" y="295" width="3" height="50" rx="1" fill="#1255A4"/>
       <?php endfor; ?>
 
-      <!-- Sidewalk -->
       <rect x="0" y="338" width="960" height="6" fill="#9E8060"/>
-
-      <!-- Path/driveway -->
       <rect x="360" y="340" width="240" height="20" fill="#C4A870" opacity="0.6"/>
-
     </svg>
   </div>
 
@@ -561,5 +587,14 @@
   &copy; <?= date('Y') ?> <span>SMK Ganesha Tama Boyolali</span> — Berkarakter, Inovatif, dan Berwawasan Lingkungan
 </div>
 
+<script>
+  const toggle  = document.getElementById('navToggle');
+  const mobileNav = document.getElementById('mobileNav');
+  const icon    = document.getElementById('navIcon');
+  toggle.addEventListener('click', () => {
+    const open = mobileNav.classList.toggle('open');
+    icon.className = open ? 'bi bi-x-lg' : 'bi bi-list';
+  });
+</script>
 </body>
 </html>
